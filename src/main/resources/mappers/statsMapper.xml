@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- <mapper></mapper> 엘리먼트는 MyBatis 설정 XML 파일의 루트 엘리먼트 -->  
+<!-- namespcae="" 메소드 호출시 식별자로 사용된다. -->
+<mapper namespace="com.woojinplaimm.edu.StatsMapper">
+	<select id="statsRecord" resultType="Stats">
+		SELECT course_id, course_name, oc_start_date,oc_goals_num, total,mon1,mon2,mon3,mon4,mon5,mon6,mon7,mon8,mon9,mon10,mon11,mon12,rate,
+		 goal1,goal2,goal3,goal4,goal5,goal6,goal7,goal8,goal9,goal10,goal11,goal12
+		  FROM statsrecordview WHERE INSTR(oc_start_date,#{oc_start_date}) > 0
+	</select>
+
+	
+</mapper>  

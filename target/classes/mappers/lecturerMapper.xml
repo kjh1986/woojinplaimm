@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- <mapper></mapper> 엘리먼트는 MyBatis 설정 XML 파일의 루트 엘리먼트 -->  
+<!-- namespcae="" 메소드 호출시 식별자로 사용된다. -->
+<mapper namespace="com.woojinplaimm.edu.LecturerMapper">
+
+	<select id="lecturerList" resultType="Lecturer">
+		<![CDATA[SELECT lec_id, lec_name, lec_tel, NVL(lec_sub,'없음') AS lec_sub FROM lecturerView  ]]>
+		<if test="key != 'all'.toString()">
+			<if test="key == 'lec_id'.toString()">
+				WHERE lec_id = #{value}  
+			</if>
+			<if test="key == 'lec_name'.toString()">
+				WHERE INSTR(lec_name, #{value}) > 0  
+			</if>
+			<if test="key == 'lec_sub'.toString()">
+				WHERE INSTR(lec_sub, #{value}) > 0  
+			</if>
+		</if>
+		<![CDATA[ ORDER BY lec_id DESC ]]>
+	</select>
+	
+	<insert id="lecturerInsert" >
+		INSERT INTO lecturers (lec_id,lec_name,lec_tel) 
+		VALUES ((SELECT CONCAT('lec',LPAD(NVL(MAX(REPLACE(lec_id, 'lec')), 0)+1,3,'0')) FROM lecturers),#{lec_name},#{lec_tel})
+	</insert>
+	
+	<update id ="lecturerUpdate">
+		UPDATE lecturers SET lec_name = #{lec_name}, lec_tel = #{lec_tel} 
+		WHERE lec_id = #{lec_id}
+	</update>
+	
+	<delete id="lecturerDelete">
+		DELETE FROM lecturers WHERE lec_id = #{lec_id} 
+	</delete>
+	
+	<select id="insertSubjectList" resultType="Lecturer">
+		SELECT sub_id, sub_name FROM subjects 
+		WHERE sub_id NOT IN (SELECT sub_id FROM lec_sub WHERE lec_id = #{lec_id})
+	</select>
+	
+	<insert id="insertLecsub">
+		INSERT INTO lec_sub (lec_id,sub_id) VALUES (#{lec_id},#{sub_id})
+	</insert>
+	
+	<select id="deleteSubjectList" resultType="Lecturer">
+		SELECT sub_id, sub_name FROM subjects 
+		WHERE sub_id IN (SELECT sub_id FROM lec_sub WHERE lec_id = #{lec_id})
+	</select>
+
+	<delete id="deleteLecsub">
+		DELETE FROM lec_sub WHERE lec_id=#{lec_id} AND sub_id=#{sub_id}
+	</delete>
+	
+</mapper>  

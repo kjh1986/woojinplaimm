@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- <mapper></mapper> 엘리먼트는 MyBatis 설정 XML 파일의 루트 엘리먼트 -->  
+<!-- namespcae="" 메소드 호출시 식별자로 사용된다. -->
+<mapper namespace="com.woojinplaimm.edu.OcMapper">
+
+	<select id="ocList" resultType="OpenCourse">
+		<![CDATA[SELECT oc_id,money, course_id, course_name, ocd_code, ocd_name, job_family_code,subs, job_family_name, oc_start_date, oc_finish_date, oc_goals_num, oc_note, oc_timeofedu,ing, row_num FROM
+			(SELECT oc_id,money, course_id, course_name, ocd_code, ocd_name, job_family_code, job_family_name, oc_start_date, oc_finish_date, oc_goals_num, oc_note, oc_timeofedu
+			, ing, subs, ROW_NUMBER() OVER (ORDER BY oc_id DESC) AS row_num FROM ocbasicView  WHERE 1 = 1  ]]>
+		<if test="key != 'all'.toString()">
+			<if test="key == 'oc_id'.toString()">
+				AND oc_id = #{value}   
+			</if>
+			<if test="key == 'course_name'.toString()">
+				AND INSTR(course_name, #{value}) > 0   
+			</if>
+			<if test="key == 'ocd_name'.toString()">
+				AND INSTR(ocd_name, #{value}) > 0   
+			</if>
+			<if test="key == 'job_family_name'.toString()">
+				AND INSTR(job_family_name, #{value}) > 0 
+			</if>
+			<if test="key == 'subs'.toString()">
+				AND INSTR(subs, #{value}) > 0 
+			</if>
+			
+		</if>
+		<if test="ing != 'all'.toString()">
+			AND ing = #{ing}  
+		</if>
+	
+		<![CDATA[ ) WHERE row_num >= #{startIndex} AND row_num <= #{lastIndex} ]]>
+	</select>
+	
+	<select id="ocTotal" resultType="java.lang.Integer">
+		SELECT count(*) AS total FROM open_courses  
+	</select>
+	<select id="searchCount" resultType="java.lang.Integer">
+		<![CDATA[ SELECT count(*) AS count_ FROM ocbasicView WHERE 1 = 1   ]]>
+		<if test="key != 'all'.toString()">
+			<if test="key == 'oc_id'.toString()">
+				AND oc_id = #{value}   
+			</if>
+			<if test="key == 'course_name'.toString()">
+				AND INSTR(course_name, #{value}) > 0   
+			</if>
+			<if test="key == 'ocd_name'.toString()">
+				AND INSTR(ocd_name, #{value}) > 0   
+			</if>
+			<if test="key == 'job_family_name'.toString()">
+				AND INSTR(job_family_name, #{value}) > 0
+			</if>
+			<if test="key == 'subs'.toString()">
+				AND INSTR(subs, #{value}) > 0 
+			</if>
+			
+		</if>
+		
+		<if test="ing != 'all'.toString()">
+			AND ing = #{ing}  
+		</if>
+	</select>
+	
+	<delete id ="ocDelete">
+		DELETE FROM open_courses WHERE oc_id= #{oc_id}  
+	</delete>
+	
+	<select id="ocInfo"  resultType="OpenCourse">
+		SELECT oc_timeofedu, ing, money, oc_start_date, job_family_name, oc_note, ocd_name, job_family_code
+		,oc_id,subs ,course_id, course_name, ocd_code, oc_finish_date, oc_goals_num
+		 FROM ocDetailView WHERE oc_id= #{oc_id}  
+	</select>
+	
+	<select id="ocdList" resultType="BasicInfo">
+		SELECT ocd_code, ocd_name FROM oc_division  
+	</select>
+	
+	<select id="jfList" resultType="BasicInfo">
+		SELECT job_family_code, job_family_name FROM job_family  
+	</select>
+	
+	<select id="courseList" resultType="BasicInfo">
+		SELECT course_id, course_name FROM courses  
+	</select>
+	
+	<select id="subjectList" resultType="BasicInfo">
+		SELECT sub_id, sub_name, NVL(sub_lec,'없음') AS sub_lec FROM subjectView  
+	</select>
+	
+	<select id="ocOsLecList" resultType="BasicInfo">
+		SELECT lec_id, lec_name FROM lecturers WHERE lec_id IN (SELECT lec_id FROM lec_sub WHERE sub_id = #{sub_id})
+	</select>
+	
+	
+	<insert id="ocInsert">
+		INSERT INTO open_courses (oc_id,course_id,ocd_code,job_family_code,oc_start_date,oc_finish_date,oc_goals_num
+		,oc_timeofedu,money) VALUES ((SELECT CONCAT('oc-',LPAD(NVL(MAX(REPLACE(oc_id, 'oc-')), 0)+1,4,'0')) FROM open_courses)
+		,#{course_id},#{ocd_code},#{job_family_code},#{oc_start_date},#{oc_finish_date},#{oc_goals_num},#{oc_timeofedu},#{money})
+	</insert>
+	
+	<update id="ocUpdate">
+		UPDATE open_courses SET course_id = #{course_id} , ocd_code=#{ocd_code},  job_family_code=#{job_family_code}
+		,  oc_start_date=#{oc_start_date},  oc_finish_date=#{oc_finish_date},  oc_goals_num=#{oc_goals_num}
+		, oc_note=#{oc_note},  oc_timeofedu=#{oc_timeofedu}, money=#{money}
+		 WHERE oc_id=#{oc_id}
+	</update>
+	
+	<insert id="ocOsInsert">
+		INSERT INTO open_subjects (os_id, oc_id, lec_id, sub_id)
+		 VALUES ((SELECT CONCAT('os-',LPAD(NVL(MAX(REPLACE(os_id, 'os-')), 0)+1,6,'0')) FROM open_subjects)
+		 ,#{oc_id},#{lec_id},#{sub_id})
+	</insert>
+	
+	<select id="ocOsDeleteList" resultType="OpenCourse">
+		SELECT oc_id, os_id, sub_id, lec_id, lecsub FROM osview WHERE oc_id = #{oc_id}
+	</select>
+	
+	<delete id ="ocOsDelete">
+		DELETE FROM open_subjects WHERE os_id= #{os_id}  
+	</delete>
+	
+</mapper>  

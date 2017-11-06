@@ -1,0 +1,56 @@
+@charset "EUC-KR";
+
+.sidenav .list-group a{
+	border-radius: 0;
+}
+.sidenav .list-group{
+	margin-bottom: 0;
+}
+
+
+.row.content {
+	min-height: 700px
+}
+
+
+footer {
+	background-color: #555;
+	color: white;
+	padding: 15px;
+}
+
+.wj-logo {
+	padding: 0px;
+}
+
+div.menu-group {
+	padding: 0px;
+	margin: 0px;
+}
+
+#index{float:left;margin:0;padding:0;}
+#index li{float:left;margin:0;padding:0;list-style: none;}
+#index ul{float:left;margin:0;padding:0;list-style: none;}
+img.link-icon{height:195px;width:195px;}
+.list-group a{border-radius:none;}
+
+div.panel {
+	box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.2), 0 0px 2px 0
+		rgba(0, 0, 0, 0.1);
+}
+div.sidenav {
+	box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.2), 0 0px 2px 0
+		rgba(0, 0, 0, 0.1);
+}
+
+
+table{
+	width:100%;
+}
+label{
+	margin-bottom: 21px;
+	margin-top: 3px;
+}
+.modal input, .modal select, .modal button{
+	margin-bottom: 10px;
+}

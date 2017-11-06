@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- <mapper></mapper> 엘리먼트는 MyBatis 설정 XML 파일의 루트 엘리먼트 -->  
+<!-- namespcae="" 메소드 호출시 식별자로 사용된다. -->
+<mapper namespace="com.woojinplaimm.edu.CompanyMapper">
+
+	<select id="companyList" resultType="Company">
+		<![CDATA[SELECT com_id,com_name,com_tel,com_inurance_id,com_empnum,com_ceo_name,com_postnum 
+			,com_addr,com_type_biz,com_type_biz_detail,com_note,dc,oj_date, ac_date, ac_renew_date, ac_cancel_date, row_num FROM 
+			(SELECT com_id,com_name,com_tel,com_inurance_id,com_empnum,com_ceo_name,com_postnum 
+			,com_addr,com_type_biz,com_type_biz_detail,com_note,dc,oj_date, ac_date, ac_renew_date, ac_cancel_date, ROW_NUMBER() OVER (ORDER BY com_id DESC) AS row_num FROM companyView ]]>
+		<if test="key != 'all'.toString()">
+			<if test="key == 'com_id'.toString()">
+				WHERE com_id = #{value}   
+			</if>
+			<if test="key == 'com_name'.toString()">
+				WHERE INSTR(com_name, #{value}) > 0   
+			</if>
+			<if test="key == 'com_tel'.toString()">
+				WHERE INSTR(com_tel, #{value}) > 0   
+			</if>
+			<if test="key == 'com_inurance_id'.toString()">
+				WHERE com_inurance_id = #{value}  
+			</if>
+			<if test="key == 'com_ceo_name'.toString()">
+				WHERE INSTR(com_ceo_name, #{value}) > 0 
+			</if>
+			<if test="key == 'com_addr'.toString()">
+				WHERE INSTR(com_addr, #{value}) > 0 
+			</if>
+			<if test="key == 'com_empnum_up'.toString()">
+				<![CDATA[ WHERE com_empnum >= #{com_empnum}]]>
+			</if>
+			<if test="key == 'com_empnum_down'.toString()">
+				<![CDATA[ WHERE com_empnum <= #{com_empnum}]]>
+			</if>
+		</if>
+	
+		<![CDATA[ ) WHERE row_num >= #{startIndex} AND row_num <= #{lastIndex} ]]>
+	</select>
+	
+	<insert id="companyInsert" >
+		INSERT INTO company(com_id,com_name,com_tel,com_empnum,com_postnum,com_addr,com_ceo_name
+		,com_inurance_id,com_type_biz,com_type_biz_detail,com_note) VALUES
+		(#{com_id},#{com_name},#{com_tel},#{com_empnum},#{com_postnum},#{com_addr},#{com_ceo_name}
+		,#{com_inurance_id},#{com_type_biz},#{com_type_biz_detail},#{com_note})
+	</insert>
+	
+	<update id ="companyUpdate">
+		UPDATE company SET  com_name=#{com_name},com_tel=#{com_tel},com_empnum=#{com_empnum},com_postnum=#{com_postnum},com_addr=#{com_addr},com_ceo_name=#{com_ceo_name}
+		,com_inurance_id=#{com_inurance_id},com_type_biz=#{com_type_biz},com_type_biz_detail=#{com_type_biz_detail},com_note=#{com_note} 
+		WHERE com_id =#{com_id}
+	</update>
+	
+	<delete id="companyDelete">
+		DELETE FROM company WHERE com_id = #{com_id} 
+	</delete>
+	
+	<select id="companyTotal" resultType="java.lang.Integer">
+		SELECT count(*) AS total FROM company  
+	</select>
+	
+	<select id="searchCount" resultType="java.lang.Integer">
+		SELECT count(*) AS count_ FROM companyView 
+		<if test="key != 'all'.toString()">
+			<if test="key == 'com_id'.toString()">
+				WHERE com_id = #{value}   
+			</if>
+			<if test="key == 'com_name'.toString()">
+				WHERE INSTR(com_name, #{value}) > 0   
+			</if>
+			<if test="key == 'com_tel'.toString()">
+				WHERE INSTR(com_tel, #{value}) > 0   
+			</if>
+			<if test="key == 'com_inurance_id'.toString()">
+				WHERE com_inurance_id = #{value}  
+			</if>
+			<if test="key == 'com_ceo_name'.toString()">
+				WHERE INSTR(com_ceo_name, #{value}) > 0 
+			</if>
+			<if test="key == 'com_addr'.toString()">
+				WHERE INSTR(com_addr, #{value}) > 0 
+			</if>
+			<if test="key == 'com_empnum_up'.toString()">
+				<![CDATA[ WHERE com_empnum >= #{com_empnum}]]>
+			</if>
+			<if test="key == 'com_empnum_down'.toString()">
+				<![CDATA[ WHERE com_empnum <= #{com_empnum}]]>
+			</if>
+		</if>
+	</select>
+	
+	<insert id = "companydefaultInsert">
+		INSERT INTO default_company(com_id) VALUES (#{com_id})
+	</insert>
+	
+	<delete id = "companydefaultDelete">
+		DELETE FROM default_company WHERE com_id=#{com_id}
+	</delete>
+
+	<select id="agreeCheck" resultType="Company">
+		SELECT com_id FROM agree_company WHERE com_id =#{com_id} 
+	</select>
+	
+	<update id = "agreeUpdate">
+		UPDATE agree_company SET ac_date=#{ac_date},ac_renew_date=#{ac_renew_date},ac_cancel_date=#{ac_cancel_date} 
+		WHERE com_id=#{com_id}
+	</update>
+	
+	<insert id = "agreeInsert">
+		INSERT INTO agree_company(ac_date,ac_renew_date,ac_cancel_date,com_id) 
+		VALUES(#{ac_date},#{ac_renew_date},#{ac_cancel_date},#{com_id})
+	</insert>
+	
+	<delete id = "companyAgreeDelete">
+		DELETE FROM agree_company WHERE com_id = #{com_id}
+	</delete>
+	
+	<select id="ojCheck" resultType="Company">
+		SELECT com_id FROM online_join WHERE com_id =#{com_id}  
+	</select>
+	
+	<update id = "ojUpdate">
+		UPDATE online_join SET oj_date=#{oj_date} WHERE com_id=#{com_id}
+	</update>
+	
+	<insert id = "ojInsert">
+		INSERT INTO online_join(oj_date,com_id) VALUES(#{oj_date},#{com_id})
+	</insert>
+	
+	<delete id = "ojDelete">
+		DELETE FROM online_join WHERE com_id = #{com_id}
+	</delete>
+	
+	<select id="companyExcel" resultType="Company">
+		SELECT com_id,com_name,com_tel,com_inurance_id,com_empnum,com_ceo_name,com_postnum,com_addr,
+		com_type_biz,com_type_biz_detail,com_note,dc,oj_date,ac_date,ac_renew_date,ac_cancel_date FROM companyView 
+		<if test="key != 'all'.toString()">
+			<if test="key == 'com_id'.toString()">
+				WHERE com_id = #{value}   
+			</if>
+			<if test="key == 'com_name'.toString()">
+				WHERE INSTR(com_name, #{value}) > 0   
+			</if>
+			<if test="key == 'com_tel'.toString()">
+				WHERE INSTR(com_tel, #{value}) > 0   
+			</if>
+			<if test="key == 'com_inurance_id'.toString()">
+				WHERE com_inurance_id = #{value}  
+			</if>
+			<if test="key == 'com_ceo_name'.toString()">
+				WHERE INSTR(com_ceo_name, #{value}) > 0 
+			</if>
+			<if test="key == 'com_addr'.toString()">
+				WHERE INSTR(com_addr, #{value}) > 0 
+			</if>
+			<if test="key == 'com_empnum_up'.toString()">
+				<![CDATA[ WHERE com_empnum >= #{com_empnum}]]>
+			</if>
+			<if test="key == 'com_empnum_down'.toString()">
+				<![CDATA[ WHERE com_empnum <= #{com_empnum}]]>
+			</if>
+		</if>
+	</select>
+	
+</mapper>  

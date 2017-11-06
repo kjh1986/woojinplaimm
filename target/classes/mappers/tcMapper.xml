@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- <mapper></mapper> 엘리먼트는 MyBatis 설정 XML 파일의 루트 엘리먼트 -->  
+<!-- namespcae="" 메소드 호출시 식별자로 사용된다. -->
+<mapper namespace="com.woojinplaimm.edu.TcMapper">
+
+	<select id="tcStInsertList" resultType="Student">
+		<![CDATA[SELECT st_id,pic_filename, std_code, std_name, st_name, st_age, st_ssn, st_birth, st_tel, st_email, st_carnum, st_regdate, st_note, row_num FROM 
+			(SELECT st_id,pic_filename, std_code, std_name, st_name, st_age, st_ssn, st_birth, st_tel, st_email, st_carnum, st_regdate, st_note, ROW_NUMBER() OVER (ORDER BY st_id DESC) AS row_num FROM studentView 
+			 WHERE st_id NOT IN(SELECT st_id FROM take_courses WHERE oc_id = #{oc_id}) 
+		]]>
+		<if test="key != 'all'.toString()">
+			<if test="key == 'st_id'.toString()">
+				AND st_id = #{value}   
+			</if>
+			<if test="key == 'st_name'.toString()">
+				AND INSTR(st_name, #{value}) > 0   
+			</if>
+			<if test="key == 'st_tel'.toString()">
+				AND INSTR(st_tel, #{value}) > 0   
+			</if>
+			
+			
+		</if>
+		<if test="std_code != 'all'.toString()">
+			AND std_code = #{std_code}  
+		</if>
+	
+		<![CDATA[ ) WHERE row_num >= #{startIndex} AND row_num <= #{lastIndex} ]]>
+	</select>
+	
+	<select id="courseSearch" resultType="OpenCourse">
+		SELECT oc_id,ocd_name,job_family_name,ing, course_name, oc_start_date,oc_finish_date,oc_goals_num,oc_timeofedu,money
+		 FROM ocbasicview WHERE oc_id = #{oc_id}
+	</select>
+	
+	<select id="tcStUpdateList" resultType="Student">
+		SELECT cs_id, cs_date, tc_id, st_id, std_name, st_name, st_age, st_birth, t_name, tc_sale, t_code,tc_drop, tc_complete FROM tcView WHERE oc_id = #{oc_id}
+	</select>
+	
+	
+	<select id="tuitionList" resultType="BasicInfo">
+		SELECT t_code, t_name FROM tuition  
+	</select>
+	
+	<update id = "tcUpdate">
+		UPDATE take_courses SET t_code=#{t_code},tc_sale=#{tc_sale}  WHERE tc_id=#{tc_id}
+	</update>
+	
+	<delete id="tcDelete">
+		DELETE FROM take_courses WHERE tc_id=#{tc_id}
+	</delete>
+	
+	<select id="stdList" resultType="BasicInfo">
+		SELECT std_code, std_name FROM st_division  
+	</select>
+	
+	<select id="studentTotal" resultType="java.lang.Integer">
+		SELECT count(*) AS total FROM students 
+	</select>
+
+	<select id="searchCount" resultType="java.lang.Integer">
+		<![CDATA[SELECT count(*) AS count_ FROM studentView WHERE 1=1 ]]>
+		<if test="key != 'all'.toString()">
+			<if test="key == 'st_id'.toString()">
+				AND st_id = #{value}   
+			</if>
+			<if test="key == 'st_name'.toString()">
+				AND INSTR(st_name, #{value}) > 0   
+			</if>
+			<if test="key == 'st_tel'.toString()">
+				AND INSTR(st_tel, #{value}) > 0   
+			</if>
+		</if>
+		<![CDATA[ AND st_id NOT IN(SELECT st_id FROM take_courses WHERE oc_id = #{oc_id}) ]]>
+		<if test="std_code != 'all'.toString()">
+			AND std_code = #{std_code}  
+		</if>
+	</select>
+	
+	<insert id="tcInsert">
+		INSERT INTO take_courses(tc_id,oc_id,st_id,tc_sale,t_code)
+		VALUES((SELECT CONCAT('tc-',LPAD(NVL(MAX(REPLACE(tc_id, 'tc-')), 0)+1,6,'0')) FROM take_courses),#{oc_id},#{st_id},#{tc_sale},#{t_code})
+	</insert>
+	
+	<insert id="tcDropInsert">
+		INSERT INTO drops(tc_id) VALUES (#{tc_id})
+	</insert>
+	
+	<delete id="tcDropDelete">
+		DELETE FROM drops WHERE tc_id=#{tc_id}
+	</delete>
+	
+	<insert id="csInsert">
+		INSERT INTO complete_students(cs_id,tc_id,cs_date)
+		VALUES((SELECT CONCAT('교육'||TO_CHAR(SYSDATE,'yy')||'-',LPAD(NVL(MAX(SUBSTR(cs_id, 6)), 0)+1,3,'0')) FROM complete_students
+        WHERE INSTR(cs_id, CONCAT(TO_CHAR(SYSDATE,'yy'),'-'))>0),#{tc_id},#{cs_date})
+	</insert>
+	
+	<update id = "csUpdate">
+		UPDATE complete_students SET cs_id=#{cs_id}, cs_date=#{cs_date}  WHERE cs_id=#{old_cs_id}
+	</update>
+	
+	<delete id="csDelete">
+		DELETE FROM complete_students WHERE cs_id=#{cs_id}
+	</delete>
+	
+</mapper>  

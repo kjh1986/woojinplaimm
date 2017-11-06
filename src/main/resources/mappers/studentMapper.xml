@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- <mapper></mapper> 엘리먼트는 MyBatis 설정 XML 파일의 루트 엘리먼트 -->  
+<!-- namespcae="" 메소드 호출시 식별자로 사용된다. -->
+<mapper namespace="com.woojinplaimm.edu.StudentMapper">
+
+	<select id="studentList" resultType="Student">
+		<![CDATA[SELECT st_id,pic_filename, std_code, std_name, st_name, st_age, st_ssn, st_birth, st_tel, st_email, st_carnum, st_regdate, st_note, row_num,com_id, com_name FROM  
+		 (SELECT st_id,pic_filename, std_code, std_name, st_name, st_age, st_ssn, st_birth, st_tel, st_email, st_carnum, st_regdate, st_note
+		 ,com_id, com_name, ROW_NUMBER() OVER (ORDER BY st_id DESC) AS row_num FROM studentView ]]>
+		<if test="key != 'all'.toString()">
+			<if test="key == 'st_id'.toString()">
+				WHERE st_id = #{value}   
+			</if>
+			<if test="key == 'st_name'.toString()">
+				WHERE INSTR(st_name, #{value}) > 0   
+			</if>
+			<if test="key == 'st_tel'.toString()">
+				WHERE INSTR(st_tel, #{value}) > 0   
+			</if>
+			<if test="key == 'com_name'.toString()">
+				WHERE INSTR(com_name, #{value}) > 0   
+			</if>
+		</if>
+		<if test="key == 'all'.toString()">
+			WHERE 1 = 1 
+		</if>
+		<if test="std_code != 'all'.toString()">
+			 AND std_code = #{std_code} 
+		</if>
+		
+		
+		<![CDATA[ ) WHERE row_num >= #{startIndex} AND row_num <= #{lastIndex} ]]>
+	</select>
+	
+	<insert id="studentInsert" >
+		INSERT INTO students (st_id,st_name,st_ssn,st_tel,st_email,st_carnum,st_regdate) VALUES 
+		((SELECT CONCAT('ST',LPAD(NVL(MAX(REPLACE(st_id, 'ST')), 0)+1,4,'0')) FROM students)
+		,#{st_name},#{st_ssn},#{st_tel},#{st_email},#{st_carnum},SYSDATE)
+	</insert>
+	
+	<update id ="studentUpdate">
+		UPDATE students SET st_name = #{st_name}, st_ssn = #{st_ssn} ,st_regdate = #{st_regdate}
+		, st_tel = #{st_tel} , st_carnum = #{st_carnum}, st_note = #{st_note}  WHERE st_id= #{st_id}
+	</update>
+	
+	<delete id="studentDelete">
+		DELETE FROM students WHERE st_id = #{st_id} 
+	</delete>
+	
+	<select id="studentInfo" resultType="Student">
+		SELECT st_id,pic_filename, std_code, std_name, st_name
+		, st_age, st_ssn, st_birth, st_tel, st_email, st_carnum, st_regdate, st_note FROM studentView 
+		WHERE st_id= #{st_id}
+	</select>
+	
+	<select id="searchCount" resultType="java.lang.Integer">
+		<![CDATA[SELECT count(*) AS count_ FROM studentView ]]>
+		<if test="key != 'all'.toString()">
+			<if test="key == 'st_id'.toString()">
+				WHERE st_id = #{value}   
+			</if>
+			<if test="key == 'st_name'.toString()">
+				WHERE INSTR(st_name, #{value}) > 0   
+			</if>
+			<if test="key == 'st_tel'.toString()">
+				WHERE INSTR(st_tel, #{value}) > 0   
+			</if>
+		</if>
+		<if test="key == 'all'.toString()">
+			WHERE 1 = 1 
+		</if>
+		<if test="std_code != 'all'.toString()">
+			 AND std_code = #{std_code}  
+		</if>
+	</select>
+	
+	<select id="getStdById" resultType="java.lang.String">
+		SELECT std_code FROM student_std WHERE st_id = #{st_id} 
+	</select>
+	
+	<select id="stdList" resultType="Student">
+		SELECT std_code, std_name FROM st_division  
+	</select>
+	
+	<select id="acStudentInfo" resultType="Student">
+		SELECT st_id, pic_filename, std_code, std_name, st_name, st_age, st_ssn, st_birth, st_tel, st_email, st_carnum
+			, st_regdate, st_note, com_id, com_name,com_tel, ac_st_dept, job_title, emp_id FROM acstudentView  WHERE st_id = #{st_id} 
+	</select>
+	
+	<select id="companyList" resultType="Company">
+		SELECT com_id, com_name FROM company  
+	</select>
+	
+	<select id="trainStudentInfo" resultType="Student">
+		SELECT st_id, pic_filename, std_code, std_name, st_name, st_age, st_ssn, st_birth, st_tel, st_email
+		, st_carnum, st_regdate, st_note, management_id, st_eduback, st_license, st_addr, hope_location, hope_pay  
+		FROM trainstudentView  WHERE st_id = #{st_id} 	
+	</select>
+	
+	<select id="studentTotal" resultType="java.lang.Integer">
+		SELECT count(*) AS total FROM students
+	</select>
+	
+	<insert id="studentstdInsert" >
+		INSERT INTO student_std (st_id,std_code) VALUES (#{st_id}, #{std_code})
+	</insert>
+	
+	<delete id="studentstdDelete">
+		DELETE FROM student_std WHERE st_id= #{st_id} AND std_code= #{std_code} 
+	</delete>
+	
+	<update id ="studentacUpdate">
+		UPDATE ac_students SET com_id = #{com_id}, ac_st_dept= #{ac_st_dept}, job_title= #{job_title}, emp_id= #{emp_id}
+		WHERE st_id= #{st_id}
+	</update>
+	
+	<insert id="studentacInsert" >
+		INSERT INTO ac_students(com_id,ac_st_dept,job_title,emp_id,st_id) 
+		VALUES (#{com_id},#{ac_st_dept},#{job_title},#{emp_id},#{st_id})
+	</insert>
+	
+	<select id="acCheck" resultType="Student">
+		SELECT st_id FROM ac_students WHERE st_id = #{st_id} 
+	</select>
+	
+	<delete id="studentacDelete">
+		DELETE FROM student_std WHERE st_id= #{st_id} AND std_code= #{std_code} 
+	</delete>
+	
+	<select id="trainCheck" resultType="Student">
+		SELECT st_id FROM train_students WHERE st_id = #{st_id} 
+	</select>
+	
+	<insert id="studenttrainInsert" >
+		INSERT INTO train_students(management_id, st_eduback, st_license, st_addr, hope_location,hope_pay ,st_id) 
+		VALUES (#{management_id},#{st_eduback},#{st_license},#{st_addr},#{hope_location},#{hope_pay},#{st_id}) 
+	</insert>
+	
+	<update id ="studenttrainUpdate">
+		UPDATE train_students SET 
+		 management_id=#{management_id}, st_eduback=#{st_eduback}, st_license=#{st_license} 
+		 , st_addr=#{st_addr}, hope_location=#{hope_location},hope_pay=#{hope_pay} WHERE st_id=#{st_id} 
+	</update>
+	
+	<delete id="studenttrainDelete">
+		DELETE FROM student_std WHERE st_id= #{st_id} AND std_code= #{std_code} 
+	</delete>
+	
+	<insert id="pictureAdd" >
+		INSERT INTO st_picture(st_id, pic_filename) VALUES 
+		(#{st_id},#{pic_filename}) 
+	</insert>
+	
+	<select id="picCheck" resultType="java.lang.String">
+		SELECT pic_filename FROM st_picture WHERE st_id = #{st_id} 
+	</select>
+	
+	<update id="pictureUpdate" >
+		UPDATE st_picture SET 
+		pic_filename = #{pic_filename}  WHERE st_id = #{st_id}
+	</update>
+	
+	<select id="studentExcelList" resultType="Student">
+		<![CDATA[SELECT st_id, std_code, std_name, st_name, st_ssn, st_birth, st_age, st_tel, st_email, st_carnum 
+		,st_regdate, pic_filename, st_note, management_id, st_eduback, st_license
+		,st_addr, hope_location, hope_pay, com_id, com_name, ac_st_dept, job_title
+		,emp_id, com_tel FROM studentExcelView ]]>
+		<if test="key != 'all'.toString()">
+			<if test="key == 'st_id'.toString()">
+				WHERE st_id = #{value}   
+			</if>
+			<if test="key == 'st_name'.toString()">
+				WHERE INSTR(st_name, #{value}) > 0   
+			</if>
+			<if test="key == 'st_tel'.toString()">
+				WHERE INSTR(st_tel, #{value}) > 0   
+			</if>
+		</if>
+		<if test="key == 'all'.toString()">
+			WHERE 1 = 1 
+		</if>
+		<if test="std_code != 'all'.toString()">
+			 AND std_code = #{std_code}  
+		</if>
+	</select>
+	
+	
+</mapper>  

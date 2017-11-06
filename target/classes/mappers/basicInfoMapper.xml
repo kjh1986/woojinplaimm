@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- <mapper></mapper> 엘리먼트는 MyBatis 설정 XML 파일의 루트 엘리먼트 -->  
+<!-- namespcae="" 메소드 호출시 식별자로 사용된다. -->
+<mapper namespace="com.woojinplaimm.edu.BasicInfoMapper">
+	<!-- 숙소_______________________________________________________________________________-->
+	<select id="roomList" resultType="BasicInfo">
+		<![CDATA[SELECT room_id, room_name, room_limit, room_count FROM roomCountView  ]]>
+		<if test="key != 'all'.toString()">
+			<if test="key == 'room_id'.toString()">
+				WHERE room_id = #{value}  
+			</if>
+			<if test="key == 'room_name'.toString()">
+				WHERE INSTR(room_name, #{value}) > 0  
+			</if>
+			<if test="key == 'room_limit'.toString()">
+				WHERE room_limit = #{value}  
+			</if>
+			<if test="key == 'room_count'.toString()">
+				WHERE room_limit > room_count   
+			</if>
+		</if>
+		<![CDATA[ ORDER BY room_id DESC ]]>
+	</select>
+	
+	<insert id="roomInsert" >
+		INSERT INTO rooms (room_id,room_name,room_limit) 
+		VALUES ((SELECT CONCAT('r',LPAD(NVL(MAX(REPLACE(room_id, 'r')), 0)+1,3,'0')) FROM rooms),#{room_name},#{room_limit})
+	</insert>
+	
+	<update id ="roomUpdate">
+		UPDATE rooms SET room_name = #{room_name}, room_limit = #{room_limit} 
+		WHERE room_id = #{room_id}
+	</update>
+	
+	<delete id="roomDelete">
+		DELETE FROM rooms WHERE room_id = #{room_id} 
+	</delete>
+	
+	<!-- 과목_______________________________________________________________________________-->
+	<select id="subjectList" resultType="BasicInfo">
+		<![CDATA[SELECT sub_id, sub_name, NVL(sub_lec,'없음') AS sub_lec FROM subjectView  ]]>
+		<if test="key != 'all'.toString()">
+			<if test="key == 'sub_id'.toString()">
+				WHERE sub_id = #{value}  
+			</if>
+			<if test="key == 'sub_name'.toString()">
+				WHERE INSTR(sub_name, #{value}) > 0  
+			</if>
+			<if test="key == 'sub_lec'.toString()">
+				WHERE INSTR(sub_lec, #{value}) > 0   
+			</if>
+			
+		</if>
+		<![CDATA[ ORDER BY sub_id DESC ]]>
+	</select>
+	
+	<insert id="subjectInsert" >
+		INSERT INTO subjects (sub_id,sub_name) 
+		VALUES ((SELECT CONCAT('sub',LPAD(NVL(MAX(REPLACE(sub_id, 'sub')), 0)+1,3,'0')) FROM subjects),#{sub_name})
+	</insert>
+	
+	<update id ="subjectUpdate">
+		UPDATE subjects SET sub_name = #{sub_name} 
+		WHERE sub_id = #{sub_id}
+	</update>
+	
+	<delete id="subjectDelete">
+		DELETE FROM subjects WHERE sub_id = #{sub_id} 
+	</delete>
+	
+	<!-- 과정_______________________________________________________________________________-->
+	<select id="courseList" resultType="BasicInfo">
+		<![CDATA[SELECT course_id, course_name FROM courses  ]]>
+		<if test="key != 'all'.toString()">
+			<if test="key == 'course_id'.toString()">
+				WHERE course_id = #{value}  
+			</if>
+			<if test="key == 'course_name'.toString()">
+				WHERE INSTR(course_name, #{value}) > 0  
+			</if>
+			
+		</if>
+		<![CDATA[ ORDER BY course_id DESC ]]>
+	</select>
+	
+	<insert id="courseInsert" >
+		INSERT INTO courses (course_id,course_name) 
+		VALUES ((SELECT CONCAT('co',LPAD(NVL(MAX(REPLACE(course_id, 'co')), 0)+1,3,'0')) FROM courses),#{course_name})
+	</insert>
+	
+	<update id ="courseUpdate">
+		UPDATE courses SET course_name = #{course_name} 
+		WHERE course_id = #{course_id}
+	</update>
+	
+	<delete id="courseDelete">
+		DELETE FROM courses WHERE course_id = #{course_id} 
+	</delete>
+
+	<!-- 과정구분____________________________________________________________________________-->
+	<select id="ocdList" resultType="BasicInfo">
+		<![CDATA[SELECT ocd_code, ocd_name FROM oc_division  ]]>
+		<if test="key != 'all'.toString()">
+			<if test="key == 'ocd_code'.toString()">
+				WHERE ocd_code = #{value}  
+			</if>
+			<if test="key == 'ocd_name'.toString()">
+				WHERE INSTR(ocd_name, #{value}) > 0  
+			</if>
+			
+		</if>
+		<![CDATA[ ORDER BY ocd_code DESC ]]>
+	</select>
+	
+	<insert id="ocdInsert" >
+		INSERT INTO oc_division (ocd_code,ocd_name) 
+		VALUES ((SELECT CONCAT('ocd',LPAD(NVL(MAX(REPLACE(ocd_code, 'ocd')), 0)+1,3,'0')) FROM oc_division),#{ocd_name})
+	</insert>
+	
+	<update id ="ocdUpdate">
+		UPDATE oc_division SET ocd_name = #{ocd_name} 
+		WHERE ocd_code = #{ocd_code}
+	</update>
+	
+	<delete id="ocdDelete">
+		DELETE FROM oc_division WHERE ocd_code = #{ocd_code} 
+	</delete>	
+
+	<!-- 직종구분____________________________________________________________________________-->
+	<select id="jobList" resultType="BasicInfo">
+		<![CDATA[SELECT job_family_code, job_family_name FROM job_family  ]]>
+		<if test="key != 'all'.toString()">
+			<if test="key == 'job_family_code'.toString()">
+				WHERE job_family_code = #{value}  
+			</if>
+			<if test="key == 'job_family_name'.toString()">
+				WHERE INSTR(job_family_name, #{value}) > 0  
+			</if>
+			
+		</if>
+		<![CDATA[ ORDER BY job_family_code DESC ]]>
+	</select>
+	
+	<insert id="jobInsert" >
+		INSERT INTO job_family (job_family_code,job_family_name) 
+		VALUES ((SELECT CONCAT('jf',LPAD(NVL(MAX(REPLACE(job_family_code, 'jf')), 0)+1,3,'0')) FROM job_family),#{job_family_name})
+	</insert>
+	
+	<update id ="jobUpdate">
+		UPDATE job_family SET job_family_name = #{job_family_name} 
+		WHERE job_family_code = #{job_family_code}
+	</update>
+	
+	<delete id="jobDelete">
+		DELETE FROM job_family WHERE job_family_code = #{job_family_code} 
+	</delete>		
+	
+	<!-- 훈련비구분____________________________________________________________________________-->
+	<select id="tuitionList" resultType="BasicInfo">
+		<![CDATA[SELECT t_code, t_name FROM tuition  ]]>
+		<if test="key != 'all'.toString()">
+			<if test="key == 'tuition_family_code'.toString()">
+				WHERE t_code = #{value}  
+			</if>
+			<if test="key == 'ocd_name'.toString()">
+				WHERE INSTR(t_name, #{value}) > 0  
+			</if>
+			
+		</if>
+		<![CDATA[ ORDER BY t_code DESC ]]>
+	</select>
+	
+	<insert id="tuitionInsert" >
+		INSERT INTO tuition (t_code,t_name) 
+		VALUES ((SELECT CONCAT('t',LPAD(NVL(MAX(REPLACE(t_code, 't')), 0)+1,2,'0')) FROM tuition),#{t_name})
+	</insert>
+	
+	<update id ="tuitionUpdate">
+		UPDATE tuition SET t_name = #{t_name} 
+		WHERE t_code = #{t_code}
+	</update>
+	
+	<delete id="tuitionDelete">
+		DELETE FROM tuition WHERE t_code = #{t_code} 
+	</delete>	
+	
+</mapper>  

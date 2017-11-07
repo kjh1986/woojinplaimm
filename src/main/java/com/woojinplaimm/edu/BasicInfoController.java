@@ -25,24 +25,21 @@ public class BasicInfoController {
 	private BasicInfoService service;
 	//숙소
 	@RequestMapping(value="/roomList", method = RequestMethod.GET)
-	public String roomList(HttpServletRequest req, ModelMap model, SearchKeyValue skv) {
+	public String roomList(ModelMap model, SearchKeyValue skv) {
 		
-		String key = req.getParameter("key");
-		String value = req.getParameter("value");
+		String key = skv.getKey();
 		if(key==null || key.equals("")) {
-			key = "all";
-			value = "";
+			skv.setKey(key);
+			skv.setValue("");
 		}
-		skv.setKey(key);
-		skv.setValue(value);
 		
 		List<BasicInfo> tableData  = service.roomList(skv);
 		String count = String.valueOf(tableData.size());
 		
 		if(tableData != null && tableData.size() >0) {
 			logger.info("dataSize:" + count);
-			req.setAttribute("tableData", tableData);
-			req.setAttribute("count", count);
+			model.addAttribute("tableData", tableData);
+			model.addAttribute("count", count);
 		}
 		
 		//포워딩
@@ -81,24 +78,21 @@ public class BasicInfoController {
 	}
 	//과목
 	@RequestMapping(value="/subjectList", method = RequestMethod.GET)
-	public String subjectList(HttpServletRequest req, ModelMap model, SearchKeyValue skv) {
+	public String subjectList(ModelMap model, SearchKeyValue skv) {
 		
-		String key = req.getParameter("key");
-		String value = req.getParameter("value");
+		String key = skv.getKey();
 		if(key==null || key.equals("")) {
-			key = "all";
-			value = "";
+			skv.setKey(key);
+			skv.setValue("");
 		}
-		skv.setKey(key);
-		skv.setValue(value);
 		
 		List<BasicInfo> tableData  = service.subjectList(skv);
 		String count = String.valueOf(tableData.size());
 		
 		if(tableData != null && tableData.size() >0) {
 			logger.info("dataSize:" + count);
-			req.setAttribute("tableData", tableData);
-			req.setAttribute("count", count);
+			model.addAttribute("tableData", tableData);
+			model.addAttribute("count", count);
 		}
 		
 		//포워딩
@@ -139,24 +133,21 @@ public class BasicInfoController {
 	
 	//과정
 	@RequestMapping(value="/courseList", method = RequestMethod.GET)
-	public String courseList(HttpServletRequest req, ModelMap model, SearchKeyValue skv) {
+	public String courseList(ModelMap model, SearchKeyValue skv) {
 		
-		String key = req.getParameter("key");
-		String value = req.getParameter("value");
+		String key = skv.getKey();
 		if(key==null || key.equals("")) {
-			key = "all";
-			value = "";
+			skv.setKey(key);
+			skv.setValue("");
 		}
-		skv.setKey(key);
-		skv.setValue(value);
 		
 		List<BasicInfo> tableData  = service.courseList(skv);
 		String count = String.valueOf(tableData.size());
 		
 		if(tableData != null && tableData.size() >0) {
 			logger.info("dataSize:" + count);
-			req.setAttribute("tableData", tableData);
-			req.setAttribute("count", count);
+			model.addAttribute("tableData", tableData);
+			model.addAttribute("count", count);
 		}
 		
 		//포워딩
@@ -197,24 +188,21 @@ public class BasicInfoController {
 	
 	//과정구분
 	@RequestMapping(value="/ocdList", method = RequestMethod.GET)
-	public String ocdList(HttpServletRequest req, ModelMap model, SearchKeyValue skv) {
+	public String ocdList(ModelMap model, SearchKeyValue skv) {
 		
-		String key = req.getParameter("key");
-		String value = req.getParameter("value");
+		String key = skv.getKey();
 		if(key==null || key.equals("")) {
-			key = "all";
-			value = "";
+			skv.setKey(key);
+			skv.setValue("");
 		}
-		skv.setKey(key);
-		skv.setValue(value);
 		
 		List<BasicInfo> tableData  = service.ocdList(skv);
 		String count = String.valueOf(tableData.size());
 		
 		if(tableData != null && tableData.size() >0) {
 			logger.info("dataSize:" + count);
-			req.setAttribute("tableData", tableData);
-			req.setAttribute("count", count);
+			model.addAttribute("tableData", tableData);
+			model.addAttribute("count", count);
 		}
 		
 		//포워딩
@@ -255,24 +243,21 @@ public class BasicInfoController {
 	
 	//직종구분
 	@RequestMapping(value="/jobList", method = RequestMethod.GET)
-	public String jobList(HttpServletRequest req, ModelMap model, SearchKeyValue skv) {
+	public String jobList(ModelMap model, SearchKeyValue skv) {
 		
-		String key = req.getParameter("key");
-		String value = req.getParameter("value");
+		String key = skv.getKey();
 		if(key==null || key.equals("")) {
-			key = "all";
-			value = "";
+			skv.setKey(key);
+			skv.setValue("");
 		}
-		skv.setKey(key);
-		skv.setValue(value);
 		
 		List<BasicInfo> tableData  = service.jobList(skv);
 		String count = String.valueOf(tableData.size());
 		
 		if(tableData != null && tableData.size() >0) {
 			logger.info("dataSize:" + count);
-			req.setAttribute("tableData", tableData);
-			req.setAttribute("count", count);
+			model.addAttribute("tableData", tableData);
+			model.addAttribute("count", count);
 		}
 		
 		//포워딩
@@ -313,24 +298,21 @@ public class BasicInfoController {
 	
 	//훈련비구분
 	@RequestMapping(value="/tuitionList", method = RequestMethod.GET)
-	public String tuitionList(HttpServletRequest req, ModelMap model, SearchKeyValue skv) {
+	public String tuitionList(ModelMap model, SearchKeyValue skv) {
 		
-		String key = req.getParameter("key");
-		String value = req.getParameter("value");
+		String key = skv.getKey();
 		if(key==null || key.equals("")) {
-			key = "all";
-			value = "";
+			skv.setKey(key);
+			skv.setValue("");
 		}
-		skv.setKey(key);
-		skv.setValue(value);
 		
 		List<BasicInfo> tableData  = service.tuitionList(skv);
 		String count = String.valueOf(tableData.size());
 		
 		if(tableData != null && tableData.size() >0) {
 			logger.info("dataSize:" + count);
-			req.setAttribute("tableData", tableData);
-			req.setAttribute("count", count);
+			model.addAttribute("tableData", tableData);
+			model.addAttribute("count", count);
 		}
 		
 		//포워딩

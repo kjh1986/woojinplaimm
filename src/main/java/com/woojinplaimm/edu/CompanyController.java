@@ -43,11 +43,10 @@ public class CompanyController {
 	@RequestMapping(value="/companyList", method = RequestMethod.GET)
 	public String companyList(HttpServletRequest req, ModelMap model, SearchKeyValue skv) {
 		
-		String key = req.getParameter("key");
-		String value = req.getParameter("value");
+		String key = skv.getKey();
 		if(key==null || key.equals("")) {
-			key = "all";
-			value = "";
+			skv.setKey(key);
+			skv.setValue("");
 		}
 		String strStartPage = req.getParameter("startPage");
 		 
@@ -60,8 +59,6 @@ public class CompanyController {
         int startIndex = ((startPage-1)*rows)+1;
 		int lastIndex = startPage*rows;
 		
-		skv.setKey(key);
-		skv.setValue(value);
 		skv.setStartIndex(startIndex);
 		skv.setLastIndex(lastIndex);
 		
@@ -83,7 +80,7 @@ public class CompanyController {
 			model.addAttribute("startPage", startPage);
 			
 			model.addAttribute("key", key);
-			model.addAttribute("value", value);
+			model.addAttribute("value", skv.getValue());
 		}
 		
 		//포워딩

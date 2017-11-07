@@ -33,15 +33,14 @@ public class OcController {
 	@RequestMapping(value="/ocList", method = RequestMethod.GET)
 	public String ocList(HttpServletRequest req, ModelMap model, SearchKeyValue skv) {
 		
-		String key = req.getParameter("key");
-		String value = req.getParameter("value");
-		String ing = req.getParameter("ing");
+		String key = skv.getKey();
+		String ing = skv.getIng();
 		if(key==null || key.equals("")) {
-			key = "all";
-			value = "";
+			skv.setKey(key);
+			skv.setValue("");
 		}
 		if(ing==null || ing.equals("")) {
-			ing = "all";
+			skv.setIng("all");
 		}
 
 		String strStartPage = req.getParameter("startPage");
@@ -55,9 +54,7 @@ public class OcController {
         int startIndex = ((startPage-1)*rows)+1;
 		int lastIndex = startPage*rows;
 		
-		skv.setKey(key);
-		skv.setValue(value);
-		skv.setIng(ing);
+		
 		skv.setStartIndex(startIndex);
 		skv.setLastIndex(lastIndex);
 		
@@ -78,9 +75,9 @@ public class OcController {
 			model.addAttribute("startPage", startPage);
 			
 			
-			model.addAttribute("key", key);
-			model.addAttribute("value", value);
-			model.addAttribute("ing", ing);
+			model.addAttribute("key", skv.getKey());
+			model.addAttribute("value", skv.getValue());
+			model.addAttribute("ing", skv.getIng());
 		}
 
 		List<BasicInfo> ocds = service.ocdList();

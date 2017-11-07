@@ -30,24 +30,21 @@ public class LecturerController {
 	private LecturerService service;
 	//숙소
 	@RequestMapping(value="/lecturerList", method = RequestMethod.GET)
-	public String lecturerList(HttpServletRequest req, ModelMap model, SearchKeyValue skv) {
+	public String lecturerList(ModelMap model, SearchKeyValue skv) {
 		
-		String key = req.getParameter("key");
-		String value = req.getParameter("value");
+		String key = skv.getKey();
 		if(key==null || key.equals("")) {
-			key = "all";
-			value = "";
+			skv.setKey(key);
+			skv.setValue("");
 		}
-		skv.setKey(key);
-		skv.setValue(value);
 		
 		List<Lecturer> tableData  = service.lecturerList(skv);
 		String count = String.valueOf(tableData.size());
 		
 		if(tableData != null && tableData.size() >0) {
 			logger.info("dataSize:" + count);
-			req.setAttribute("tableData", tableData);
-			req.setAttribute("count", count);
+			model.addAttribute("tableData", tableData);
+			model.addAttribute("count", count);
 		}
 		
 		//포워딩

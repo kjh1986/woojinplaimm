@@ -83,7 +83,7 @@
 		});
 
 		$("#key option[value=${key}]").attr("selected","selected");
-		$("#value").val("${value}");
+		$("#companySearchForm #value").val("${value}");
 		
 		//페이징처리
 		var totalPages = ${totalPages};//전체 페이지

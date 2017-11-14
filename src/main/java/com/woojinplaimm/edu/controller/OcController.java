@@ -1,4 +1,4 @@
-package com.woojinplaimm.edu;
+package com.woojinplaimm.edu.controller;
 
 import java.util.List;
 
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.woojinplaimm.edu.OcService;
 import com.woojinplaimm.edu.model.BasicInfo;
 import com.woojinplaimm.edu.model.OpenCourse;
 import com.woojinplaimm.edu.model.SearchKeyValue;
@@ -36,7 +37,7 @@ public class OcController {
 		String key = skv.getKey();
 		String ing = skv.getIng();
 		if(key==null || key.equals("")) {
-			skv.setKey(key);
+			skv.setKey("all");
 			skv.setValue("");
 		}
 		if(ing==null || ing.equals("")) {

@@ -1,4 +1,4 @@
-package com.woojinplaimm.edu;
+package com.woojinplaimm.edu.controller;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.woojinplaimm.edu.CompanyService;
 import com.woojinplaimm.edu.model.Company;
 import com.woojinplaimm.edu.model.SearchKeyValue;
 import com.woojinplaimm.edu.model.Student;
@@ -45,7 +46,7 @@ public class CompanyController {
 		
 		String key = skv.getKey();
 		if(key==null || key.equals("")) {
-			skv.setKey(key);
+			skv.setKey("all");
 			skv.setValue("");
 		}
 		String strStartPage = req.getParameter("startPage");
@@ -194,7 +195,6 @@ public class CompanyController {
 	@RequestMapping(value="/companyExcel", method = RequestMethod.POST)
 	public String companyExcel(HttpServletResponse response, ModelMap model, SearchKeyValue skv) {
 		String key = skv.getKey();
-		logger.info("key : {}",key);
 		if(key==null || key.equals("")) {
 			skv.setKey("all");
 			skv.setValue("");

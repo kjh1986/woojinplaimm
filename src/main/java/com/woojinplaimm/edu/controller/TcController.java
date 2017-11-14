@@ -1,4 +1,4 @@
-package com.woojinplaimm.edu;
+package com.woojinplaimm.edu.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.woojinplaimm.edu.TcService;
 import com.woojinplaimm.edu.model.BasicInfo;
 import com.woojinplaimm.edu.model.OpenCourse;
 import com.woojinplaimm.edu.model.SearchKeyValue;

@@ -1,4 +1,4 @@
-package com.woojinplaimm.edu;
+package com.woojinplaimm.edu.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.woojinplaimm.edu.StudentService;
 import com.woojinplaimm.edu.model.Company;
 import com.woojinplaimm.edu.model.SearchKeyValue;
 import com.woojinplaimm.edu.model.Student;
@@ -50,7 +51,6 @@ public class StudentController {
 		String std_code=skv.getStd_code();
 		
 		if(key==null || key.equals("")) {
-			key="all";
 			skv.setKey("all");
 			skv.setValue("");
 		}

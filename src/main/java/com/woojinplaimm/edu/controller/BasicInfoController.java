@@ -1,4 +1,4 @@
-package com.woojinplaimm.edu;
+package com.woojinplaimm.edu.controller;
 
 import java.util.List;
 
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.woojinplaimm.edu.BasicInfoService;
 import com.woojinplaimm.edu.model.BasicInfo;
 import com.woojinplaimm.edu.model.SearchKeyValue;
 
@@ -29,7 +30,7 @@ public class BasicInfoController {
 		
 		String key = skv.getKey();
 		if(key==null || key.equals("")) {
-			skv.setKey(key);
+			skv.setKey("all");
 			skv.setValue("");
 		}
 		
@@ -82,7 +83,7 @@ public class BasicInfoController {
 		
 		String key = skv.getKey();
 		if(key==null || key.equals("")) {
-			skv.setKey(key);
+			skv.setKey("all");
 			skv.setValue("");
 		}
 		
@@ -137,7 +138,7 @@ public class BasicInfoController {
 		
 		String key = skv.getKey();
 		if(key==null || key.equals("")) {
-			skv.setKey(key);
+			skv.setKey("all");
 			skv.setValue("");
 		}
 		
@@ -192,7 +193,7 @@ public class BasicInfoController {
 		
 		String key = skv.getKey();
 		if(key==null || key.equals("")) {
-			skv.setKey(key);
+			skv.setKey("all");
 			skv.setValue("");
 		}
 		
@@ -247,7 +248,7 @@ public class BasicInfoController {
 		
 		String key = skv.getKey();
 		if(key==null || key.equals("")) {
-			skv.setKey(key);
+			skv.setKey("all");
 			skv.setValue("");
 		}
 		
@@ -302,7 +303,7 @@ public class BasicInfoController {
 		
 		String key = skv.getKey();
 		if(key==null || key.equals("")) {
-			skv.setKey(key);
+			skv.setKey("all");
 			skv.setValue("");
 		}
 		
